@@ -1,452 +1,502 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
-import { Slider } from '@/components/ui/slider';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const flowers = [
+const features = [
   {
-    id: 1,
-    name: 'Нежный рассвет',
-    price: 3500,
-    image: 'https://cdn.poehali.dev/projects/b9dcd7f6-d57d-497d-a386-abb58949b3ed/files/04f8184d-14a2-4899-8d48-cbeb79e12c4c.jpg',
-    type: 'roses',
-    color: 'pink',
-    occasion: 'love',
-    discount: 15
+    icon: 'Zap',
+    title: 'Молниеносная скорость',
+    description: 'Обрабатывайте данные в 10 раз быстрее благодаря современным технологиям'
   },
   {
-    id: 2,
-    name: 'Лавандовая мечта',
-    price: 4200,
-    image: 'https://cdn.poehali.dev/projects/b9dcd7f6-d57d-497d-a386-abb58949b3ed/files/2a60ccc9-7088-4356-ab32-0d399caee1af.jpg',
-    type: 'mixed',
-    color: 'purple',
-    occasion: 'birthday'
+    icon: 'Shield',
+    title: 'Безопасность данных',
+    description: 'Шифрование на уровне банков и полное соответствие стандартам безопасности'
   },
   {
-    id: 3,
-    name: 'Весенний сад',
-    price: 2800,
-    image: 'https://cdn.poehali.dev/projects/b9dcd7f6-d57d-497d-a386-abb58949b3ed/files/dca69adb-e8c0-45ea-aa0d-e476b72e1449.jpg',
-    type: 'tulips',
-    color: 'mixed',
-    occasion: 'anniversary',
-    discount: 20
+    icon: 'Users',
+    title: 'Командная работа',
+    description: 'Совместный доступ и синхронизация для эффективной работы команды'
   },
   {
-    id: 4,
-    name: 'Королевская роскошь',
-    price: 5600,
-    image: 'https://cdn.poehali.dev/projects/b9dcd7f6-d57d-497d-a386-abb58949b3ed/files/04f8184d-14a2-4899-8d48-cbeb79e12c4c.jpg',
-    type: 'roses',
-    color: 'red',
-    occasion: 'love'
-  },
-  {
-    id: 5,
-    name: 'Пионовая нежность',
-    price: 4800,
-    image: 'https://cdn.poehali.dev/projects/b9dcd7f6-d57d-497d-a386-abb58949b3ed/files/2a60ccc9-7088-4356-ab32-0d399caee1af.jpg',
-    type: 'peonies',
-    color: 'white',
-    occasion: 'wedding'
-  },
-  {
-    id: 6,
-    name: 'Солнечный день',
-    price: 3200,
-    image: 'https://cdn.poehali.dev/projects/b9dcd7f6-d57d-497d-a386-abb58949b3ed/files/dca69adb-e8c0-45ea-aa0d-e476b72e1449.jpg',
-    type: 'mixed',
-    color: 'yellow',
-    occasion: 'birthday',
-    discount: 10
+    icon: 'BarChart',
+    title: 'Аналитика в реальном времени',
+    description: 'Получайте инсайты мгновенно с интерактивными графиками и отчётами'
   }
 ];
 
-const flowerTypes = [
-  { value: 'roses', label: 'Розы' },
-  { value: 'tulips', label: 'Тюльпаны' },
-  { value: 'peonies', label: 'Пионы' },
-  { value: 'mixed', label: 'Микс' }
+const testimonials = [
+  {
+    name: 'Александра Ковалёва',
+    role: 'CEO, TechStart',
+    avatar: 'AK',
+    text: 'Этот продукт полностью изменил подход нашей команды к работе. Производительность выросла на 40% за первый месяц!',
+    rating: 5
+  },
+  {
+    name: 'Дмитрий Соколов',
+    role: 'Менеджер проектов, Digital Pro',
+    avatar: 'ДС',
+    text: 'Интуитивный интерфейс и мощный функционал. Внедрили за неделю, результат превзошёл ожидания.',
+    rating: 5
+  },
+  {
+    name: 'Елена Морозова',
+    role: 'Дизайнер, Creative Lab',
+    avatar: 'ЕМ',
+    text: 'Наконец-то решение, которое действительно понимает нужды пользователей. Рекомендую всем!',
+    rating: 5
+  }
 ];
 
-const colors = [
-  { value: 'red', label: 'Красные' },
-  { value: 'pink', label: 'Розовые' },
-  { value: 'white', label: 'Белые' },
-  { value: 'yellow', label: 'Жёлтые' },
-  { value: 'purple', label: 'Фиолетовые' },
-  { value: 'mixed', label: 'Микс' }
-];
-
-const occasions = [
-  { value: 'love', label: 'Любовь' },
-  { value: 'birthday', label: 'День рождения' },
-  { value: 'wedding', label: 'Свадьба' },
-  { value: 'anniversary', label: 'Годовщина' }
+const plans = [
+  {
+    name: 'Стартовый',
+    price: '0',
+    period: 'навсегда',
+    features: ['До 5 проектов', 'Базовая аналитика', 'Email поддержка', '1 GB хранилище'],
+    highlighted: false
+  },
+  {
+    name: 'Профессиональный',
+    price: '1990',
+    period: 'в месяц',
+    features: ['Неограниченно проектов', 'Расширенная аналитика', 'Приоритетная поддержка', '100 GB хранилище', 'API доступ'],
+    highlighted: true
+  },
+  {
+    name: 'Корпоративный',
+    price: '4990',
+    period: 'в месяц',
+    features: ['Всё из Pro', 'Персональный менеджер', 'SLA 99.9%', 'Неограниченное хранилище', 'Кастомизация', 'Обучение команды'],
+    highlighted: false
+  }
 ];
 
 export default function Index() {
-  const [activeSection, setActiveSection] = useState<'hero' | 'catalog' | 'promo'>('hero');
-  const [priceRange, setPriceRange] = useState([0, 10000]);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
-
-  const toggleFilter = (value: string, filters: string[], setFilters: (filters: string[]) => void) => {
-    if (filters.includes(value)) {
-      setFilters(filters.filter(f => f !== value));
-    } else {
-      setFilters([...filters, value]);
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
-  const filteredFlowers = flowers.filter(flower => {
-    const matchesPrice = flower.price >= priceRange[0] && flower.price <= priceRange[1];
-    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(flower.type);
-    const matchesColor = selectedColors.length === 0 || selectedColors.includes(flower.color);
-    const matchesOccasion = selectedOccasions.length === 0 || selectedOccasions.includes(flower.occasion);
-    
-    return matchesPrice && matchesType && matchesColor && matchesOccasion;
-  });
-
-  const promoFlowers = flowers.filter(f => f.discount);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
+    <div className="min-h-screen bg-background">
+      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-lg shadow-sm z-50 border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Icon name="Flower2" size={32} className="text-primary" />
-            <h1 className="text-3xl font-bold text-primary">Флора</h1>
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Icon name="Sparkles" size={24} className="text-primary-foreground" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">NexusFlow</h1>
           </div>
           
-          <div className="hidden md:flex gap-6">
+          <div className="hidden md:flex gap-8">
             <button 
-              onClick={() => setActiveSection('hero')}
-              className={`text-lg transition-colors ${activeSection === 'hero' ? 'text-primary font-semibold' : 'text-foreground/70 hover:text-primary'}`}
+              onClick={() => scrollToSection('about')}
+              className="text-foreground/70 hover:text-primary transition-colors"
             >
-              Главная
+              О продукте
             </button>
             <button 
-              onClick={() => setActiveSection('catalog')}
-              className={`text-lg transition-colors ${activeSection === 'catalog' ? 'text-primary font-semibold' : 'text-foreground/70 hover:text-primary'}`}
+              onClick={() => scrollToSection('features')}
+              className="text-foreground/70 hover:text-primary transition-colors"
             >
-              Каталог
+              Возможности
             </button>
             <button 
-              onClick={() => setActiveSection('promo')}
-              className={`text-lg transition-colors ${activeSection === 'promo' ? 'text-primary font-semibold' : 'text-foreground/70 hover:text-primary'}`}
+              onClick={() => scrollToSection('testimonials')}
+              className="text-foreground/70 hover:text-primary transition-colors"
             >
-              Акции
+              Отзывы
+            </button>
+            <button 
+              onClick={() => scrollToSection('pricing')}
+              className="text-foreground/70 hover:text-primary transition-colors"
+            >
+              Тарифы
+            </button>
+            <button 
+              onClick={() => scrollToSection('contact')}
+              className="text-foreground/70 hover:text-primary transition-colors"
+            >
+              Контакты
             </button>
           </div>
 
           <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Icon name="ShoppingCart" size={20} />
+            Начать бесплатно
           </Button>
         </div>
       </nav>
 
-      {activeSection === 'hero' && (
-        <section className="pt-24 pb-16 px-4 animate-fade-in">
-          <div className="container mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <h2 className="text-6xl md:text-7xl font-bold text-foreground leading-tight">
-                  Цветы для <span className="text-primary">особенных</span> моментов
-                </h2>
-                <p className="text-xl text-muted-foreground">
-                  Создаём букеты, которые дарят радость и вдохновение. Свежие цветы с доставкой по городу.
-                </p>
-                <div className="flex gap-4">
-                  <Button 
-                    size="lg" 
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8"
-                    onClick={() => setActiveSection('catalog')}
-                  >
-                    Выбрать букет
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="border-primary text-primary hover:bg-primary/10 text-lg px-8"
-                    onClick={() => setActiveSection('promo')}
-                  >
-                    Акции
-                  </Button>
+      <section id="hero" className="pt-32 pb-20 px-4">
+        <div className="container mx-auto text-center">
+          <Badge className="mb-6 bg-primary/10 text-primary hover:bg-primary/20">
+            Новое поколение продуктивности
+          </Badge>
+          <h2 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
+            Управляйте проектами<br />с <span className="text-primary">умом</span>
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            NexusFlow — это платформа для команд, которые ценят своё время. Автоматизация рутины, 
+            прозрачная аналитика и совместная работа в одном месте.
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button 
+              size="lg" 
+              className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8"
+              onClick={() => scrollToSection('pricing')}
+            >
+              Попробовать бесплатно
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-primary text-primary hover:bg-primary/10 text-lg px-8"
+              onClick={() => scrollToSection('about')}
+            >
+              Узнать больше
+            </Button>
+          </div>
+          
+          <div className="mt-16 relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
+            <div className="relative bg-card/80 backdrop-blur rounded-2xl shadow-2xl p-8 border">
+              <div className="grid grid-cols-3 gap-8 text-center">
+                <div>
+                  <div className="text-4xl font-bold text-primary mb-2">150K+</div>
+                  <div className="text-muted-foreground">Активных пользователей</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-primary mb-2">4.9/5</div>
+                  <div className="text-muted-foreground">Рейтинг на G2</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-primary mb-2">99.9%</div>
+                  <div className="text-muted-foreground">Uptime SLA</div>
                 </div>
               </div>
-              
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl"></div>
-                <img 
-                  src={flowers[0].image}
-                  alt="Букет цветов"
-                  className="relative rounded-3xl shadow-2xl animate-scale-in w-full"
-                />
-              </div>
-            </div>
-
-            <div className="mt-20 grid md:grid-cols-3 gap-6">
-              <Card className="border-primary/20 bg-white/60 backdrop-blur hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 bg-primary/10 rounded-full">
-                    <Icon name="Truck" size={24} className="text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Быстрая доставка</h3>
-                    <p className="text-muted-foreground">Доставим за 2 часа в любую точку города</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-accent/20 bg-white/60 backdrop-blur hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 bg-accent/10 rounded-full">
-                    <Icon name="Heart" size={24} className="text-accent-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Свежие цветы</h3>
-                    <p className="text-muted-foreground">Работаем только с проверенными поставщиками</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-secondary/20 bg-white/60 backdrop-blur hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="p-3 bg-secondary/10 rounded-full">
-                    <Icon name="Sparkles" size={24} className="text-secondary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Уникальный дизайн</h3>
-                    <p className="text-muted-foreground">Каждый букет создаётся с душой</p>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {activeSection === 'catalog' && (
-        <section className="pt-24 pb-16 px-4 animate-fade-in">
-          <div className="container mx-auto">
-            <h2 className="text-5xl font-bold text-center mb-12">Каталог букетов</h2>
+      <section id="about" className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="mb-4 bg-primary/10 text-primary">О продукте</Badge>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Решение для современных команд
+              </h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                NexusFlow объединяет управление задачами, коммуникацию и аналитику в единой экосистеме. 
+                Мы создали инструмент, который помогает командам фокусироваться на важном и достигать целей быстрее.
+              </p>
+              <p className="text-lg text-muted-foreground mb-8">
+                От стартапов до крупных корпораций — более 150 тысяч пользователей доверяют нам управление 
+                своими проектами каждый день.
+              </p>
+              <Button 
+                size="lg"
+                onClick={() => scrollToSection('features')}
+              >
+                Изучить возможности
+                <Icon name="ArrowRight" size={20} className="ml-2" />
+              </Button>
+            </div>
             
-            <div className="grid lg:grid-cols-4 gap-8">
-              <div className="lg:col-span-1 space-y-6">
-                <Card className="bg-white/60 backdrop-blur">
-                  <CardContent className="p-6 space-y-6">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">Цена</h3>
-                      <Slider 
-                        value={priceRange}
-                        onValueChange={setPriceRange}
-                        min={0}
-                        max={10000}
-                        step={100}
-                        className="mb-2"
-                      />
-                      <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>{priceRange[0]} ₽</span>
-                        <span>{priceRange[1]} ₽</span>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl blur-2xl"></div>
+              <Card className="relative bg-card/80 backdrop-blur">
+                <CardContent className="p-8">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Icon name="Target" size={24} className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-1">Фокус на результат</h3>
+                        <p className="text-sm text-muted-foreground">Минус бюрократия, плюс достижения</p>
                       </div>
                     </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">Тип цветов</h3>
-                      <div className="space-y-3">
-                        {flowerTypes.map(type => (
-                          <div key={type.value} className="flex items-center gap-2">
-                            <Checkbox
-                              checked={selectedTypes.includes(type.value)}
-                              onCheckedChange={() => toggleFilter(type.value, selectedTypes, setSelectedTypes)}
-                            />
-                            <label className="text-sm cursor-pointer">{type.label}</label>
-                          </div>
-                        ))}
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Icon name="Lightbulb" size={24} className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-1">Умная автоматизация</h3>
+                        <p className="text-sm text-muted-foreground">AI помощник для рутинных задач</p>
                       </div>
                     </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">Цвет</h3>
-                      <div className="space-y-3">
-                        {colors.map(color => (
-                          <div key={color.value} className="flex items-center gap-2">
-                            <Checkbox
-                              checked={selectedColors.includes(color.value)}
-                              onCheckedChange={() => toggleFilter(color.value, selectedColors, setSelectedColors)}
-                            />
-                            <label className="text-sm cursor-pointer">{color.label}</label>
-                          </div>
-                        ))}
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Icon name="Rocket" size={24} className="text-primary" />
                       </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-4">Повод</h3>
-                      <div className="space-y-3">
-                        {occasions.map(occasion => (
-                          <div key={occasion.value} className="flex items-center gap-2">
-                            <Checkbox
-                              checked={selectedOccasions.includes(occasion.value)}
-                              onCheckedChange={() => toggleFilter(occasion.value, selectedOccasions, setSelectedOccasions)}
-                            />
-                            <label className="text-sm cursor-pointer">{occasion.label}</label>
-                          </div>
-                        ))}
+                      <div>
+                        <h3 className="font-semibold mb-1">Масштабируемость</h3>
+                        <p className="text-sm text-muted-foreground">От 2 до 2000 человек в команде</p>
                       </div>
-                    </div>
-
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => {
-                        setPriceRange([0, 10000]);
-                        setSelectedTypes([]);
-                        setSelectedColors([]);
-                        setSelectedOccasions([]);
-                      }}
-                    >
-                      Сбросить фильтры
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="lg:col-span-3">
-                <div className="mb-4 text-muted-foreground">
-                  Найдено букетов: {filteredFlowers.length}
-                </div>
-                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredFlowers.map(flower => (
-                    <Card key={flower.id} className="overflow-hidden bg-white/60 backdrop-blur hover:shadow-xl transition-all hover:scale-105">
-                      <div className="relative">
-                        <img 
-                          src={flower.image}
-                          alt={flower.name}
-                          className="w-full h-64 object-cover"
-                        />
-                        {flower.discount && (
-                          <Badge className="absolute top-4 right-4 bg-destructive text-destructive-foreground">
-                            -{flower.discount}%
-                          </Badge>
-                        )}
-                      </div>
-                      <CardContent className="p-6">
-                        <h3 className="text-2xl font-semibold mb-2">{flower.name}</h3>
-                        <div className="flex items-center gap-2 mb-4">
-                          {flower.discount ? (
-                            <>
-                              <span className="text-2xl font-bold text-primary">
-                                {Math.round(flower.price * (1 - flower.discount / 100))} ₽
-                              </span>
-                              <span className="text-lg text-muted-foreground line-through">
-                                {flower.price} ₽
-                              </span>
-                            </>
-                          ) : (
-                            <span className="text-2xl font-bold text-primary">{flower.price} ₽</span>
-                          )}
-                        </div>
-                        <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                          <Icon name="ShoppingCart" size={18} className="mr-2" />
-                          В корзину
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {activeSection === 'promo' && (
-        <section className="pt-24 pb-16 px-4 animate-fade-in">
-          <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-5xl font-bold mb-4">Акции и специальные предложения</h2>
-              <p className="text-xl text-muted-foreground">Успейте купить букеты по выгодным ценам</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {promoFlowers.map(flower => (
-                <Card key={flower.id} className="overflow-hidden bg-white/60 backdrop-blur hover:shadow-xl transition-all hover:scale-105">
-                  <div className="relative">
-                    <img 
-                      src={flower.image}
-                      alt={flower.name}
-                      className="w-full h-72 object-cover"
-                    />
-                    <div className="absolute top-4 right-4 space-y-2">
-                      <Badge className="bg-destructive text-destructive-foreground text-lg px-4 py-2">
-                        -{flower.discount}%
-                      </Badge>
-                      <Badge className="bg-primary text-primary-foreground block text-center">
-                        АКЦИЯ
-                      </Badge>
                     </div>
                   </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-2xl font-semibold mb-3">{flower.name}</h3>
-                    <div className="flex items-baseline gap-3 mb-4">
-                      <span className="text-3xl font-bold text-primary">
-                        {Math.round(flower.price * (1 - flower.discount! / 100))} ₽
-                      </span>
-                      <span className="text-xl text-muted-foreground line-through">
-                        {flower.price} ₽
-                      </span>
-                    </div>
-                    <div className="mb-4 text-sm text-muted-foreground">
-                      Экономия: {flower.price - Math.round(flower.price * (1 - flower.discount! / 100))} ₽
-                    </div>
-                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                      <Icon name="ShoppingCart" size={18} className="mr-2" />
-                      Купить по акции
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                </CardContent>
+              </Card>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <Card className="mt-12 bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10 backdrop-blur border-primary/20">
-              <CardContent className="p-8 text-center">
-                <Icon name="Gift" size={48} className="mx-auto mb-4 text-primary" />
-                <h3 className="text-3xl font-bold mb-4">Подпишитесь на рассылку</h3>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Получайте эксклюзивные предложения и скидки до 30%
-                </p>
-                <div className="flex max-w-md mx-auto gap-4">
+      <section id="features" className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary">Возможности</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Всё что нужно для успеха
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Мощные инструменты, которые работают вместе для достижения ваших целей
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <Card key={index} className="bg-card/50 backdrop-blur hover:shadow-lg transition-all hover:scale-105">
+                <CardContent className="p-6">
+                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
+                    <Icon name={feature.icon as any} size={28} className="text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials" className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary">Отзывы</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Что говорят клиенты
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Присоединяйтесь к тысячам довольных пользователей по всему миру
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="bg-card/80 backdrop-blur">
+                <CardContent className="p-6">
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Icon key={i} name="Star" size={18} className="text-yellow-500 fill-yellow-500" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mb-6 italic">"{testimonial.text}"</p>
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {testimonial.avatar}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="font-semibold">{testimonial.name}</div>
+                      <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-primary/10 text-primary">Тарифы</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Выберите подходящий план
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Прозрачные цены без скрытых платежей. Начните бесплатно прямо сейчас
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {plans.map((plan, index) => (
+              <Card 
+                key={index} 
+                className={`relative ${plan.highlighted ? 'border-primary shadow-xl scale-105' : 'bg-card/50'}`}
+              >
+                {plan.highlighted && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-primary text-primary-foreground">Популярный</Badge>
+                  </div>
+                )}
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold">{plan.price === '0' ? 'Бесплатно' : `₽${plan.price}`}</span>
+                    {plan.price !== '0' && <span className="text-muted-foreground ml-2">{plan.period}</span>}
+                  </div>
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <Icon name="Check" size={20} className="text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button 
+                    className={`w-full ${plan.highlighted ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+                    variant={plan.highlighted ? 'default' : 'outline'}
+                  >
+                    {plan.price === '0' ? 'Начать бесплатно' : 'Попробовать'}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary/10 text-primary">Контакты</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Свяжитесь с нами
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Ответим на все ваши вопросы в течение 24 часов
+            </p>
+          </div>
+
+          <Card className="bg-card/80 backdrop-blur">
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="Mail" size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Email</h3>
+                      <p className="text-muted-foreground">support@nexusflow.com</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="Phone" size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Телефон</h3>
+                      <p className="text-muted-foreground">+7 (495) 123-45-67</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="MapPin" size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Офис</h3>
+                      <p className="text-muted-foreground">Москва, ул. Примерная, 123</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <input 
+                    type="text" 
+                    placeholder="Ваше имя"
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background"
+                  />
                   <input 
                     type="email" 
-                    placeholder="Ваш email"
-                    className="flex-1 px-4 py-2 rounded-lg border border-input bg-white"
+                    placeholder="Email"
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background"
                   />
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    Подписаться
+                  <textarea 
+                    placeholder="Ваше сообщение"
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background resize-none"
+                  ></textarea>
+                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    Отправить сообщение
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-      )}
+              </div>
 
-      <footer className="bg-foreground/5 py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Icon name="Flower2" size={28} className="text-primary" />
-            <span className="text-2xl font-bold text-primary">Флора</span>
+              <div className="pt-8 border-t flex justify-center gap-4">
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <Icon name="Twitter" size={20} />
+                </Button>
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <Icon name="Linkedin" size={20} />
+                </Button>
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <Icon name="Github" size={20} />
+                </Button>
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <Icon name="Facebook" size={20} />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <footer className="bg-foreground/5 py-12 px-4">
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Icon name="Sparkles" size={24} className="text-primary-foreground" />
+              </div>
+              <span className="text-2xl font-bold">NexusFlow</span>
+            </div>
+            
+            <div className="flex gap-8">
+              <button 
+                onClick={() => scrollToSection('about')}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                О продукте
+              </button>
+              <button 
+                onClick={() => scrollToSection('features')}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Возможности
+              </button>
+              <button 
+                onClick={() => scrollToSection('pricing')}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Тарифы
+              </button>
+              <button 
+                onClick={() => scrollToSection('contact')}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Контакты
+              </button>
+            </div>
+            
+            <p className="text-muted-foreground">
+              © 2024 NexusFlow. Все права защищены
+            </p>
           </div>
-          <p className="text-muted-foreground">
-            © 2024 Флора. Цветы с душой для особенных моментов
-          </p>
         </div>
       </footer>
     </div>
